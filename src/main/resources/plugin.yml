@@ -1,0 +1,42 @@
+name: ProceduraPlugin
+version: '${project.version}'
+main: com.github.hhhzzzsss.proceduraplugin.ProceduraPlugin
+api-version: 1.18
+depend: [ FastAsyncWorldEdit ]
+authors: [ hhhzzzsss ]
+description: A plugin for making procedural structures in Minecraft
+website: https://github.com/hhhzzzsss
+
+commands:
+  select:
+    description: Select the region that you're currently standing in
+    usage: /select
+    permission: procedura.use
+  deselect:
+    description: Deselect region
+    usage: /deselect
+    permission: procedura.use
+  register:
+    description: Registers a new region
+    usage: /register [<xyz dimensions>] [<bottom y>]
+    permission: procedura.use
+  unregister:
+    description: Unregisters selected region
+    usage: /unregister
+    permission: procedura.use
+  setname:
+    description: Sets the name of the selected region
+    usage: /setname [<name>]
+    permission: procedura.use
+  clearregion:
+    description: Clears the selected region
+    usage: /clearregion
+    permission: procedura.use
+  save:
+    description: Saves the currently selected plot as a schematic
+    usage: /save [<filename>]
+    permission: procedura.use
+  goto:
+    description: Teleports to a region
+    usage: /goto [<region name>]
+    permission: procedura.use
