@@ -27,4 +27,8 @@ public class Region {
                 this
         );
     }
+
+    public int getMinDim() {
+        return Math.min(xdim, Math.min(ydim, zdim));
+    }
 }

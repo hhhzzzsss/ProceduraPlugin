@@ -4,17 +4,22 @@ import com.github.hhhzzzsss.proceduraplugin.commands.*;
 import com.github.hhhzzzsss.proceduraplugin.display.BossbarHandler;
 import com.github.hhhzzzsss.proceduraplugin.fawe.DumpMonitor;
 import com.github.hhhzzzsss.proceduraplugin.region.RegionManager;
+import com.github.hhhzzzsss.proceduraplugin.region.ZoomManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class ProceduraPlugin extends JavaPlugin {
     public RegionManager regionManager;
+    public ZoomManager zoomManager;
     public BossbarHandler bossbarHandler;
     public DumpMonitor dumpMonitor;
 
     @Override
     public void onEnable() {
         getDataFolder().mkdirs();
+        saveDefaultConfig();
+
         regionManager = new RegionManager(this);
+        zoomManager = new ZoomManager(this);
         bossbarHandler = new BossbarHandler(this);
         dumpMonitor = new DumpMonitor(this);
 
@@ -30,6 +35,14 @@ public final class ProceduraPlugin extends JavaPlugin {
         getCommand("save").setExecutor(new SaveCommand(this));
         getCommand("goto").setExecutor(new GotoCommand(this));
         getCommand("goto").setTabCompleter(new GotoCommand(this));
+        getCommand("setgeneratorpath").setExecutor(new SetGeneratorPathCommand(this));
+        getCommand("setprogram").setExecutor(new SetProgramCommand(this));
+        getCommand("initposandzoom").setExecutor(new InitPosAndZoomCommand(this));
+        getCommand("zoom").setExecutor(new ZoomCommand(this));
+        getCommand("setcenter").setExecutor(new SetCenterCommand(this));
+        getCommand("setcenterandzoom").setExecutor(new SetCenterAndZoomCommand(this));
+        getCommand("shift").setExecutor(new ShiftCommand(this));
+        getCommand("run").setExecutor(new RunCommand(this));
 
         getLogger().info("ProceduraPlugin was enabled");
     }

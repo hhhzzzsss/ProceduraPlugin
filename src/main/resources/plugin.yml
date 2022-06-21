@@ -40,3 +40,35 @@ commands:
     description: Teleports to a region
     usage: /goto [<region name>]
     permission: procedura.use
+  setgeneratorpath:
+    description: Sets the path to the generator programs folder (for auto running / zooming)
+    usage: /setgeneratorpath <path>
+    permission: procedura.use
+  setprogram:
+    description: Sets the specific generator program to use
+    usage: /setprogram
+    permission: procedura.use
+  initposandzoom:
+    description: Initializes the current position and zoom to send to the program
+    usage: /initposandzoom <x> <y> <z> <zoom>
+    permission: procedura.use
+  zoom:
+    description: Zooms by a factor
+    usage: /zoom <factor>
+    permission: procedura.use
+  setcenter:
+    description: Sets the center to your current position
+    usage: /setcenter
+    permission: procedura.use
+  setcenterandzoom:
+    description: Sets the center to your current position and zooms by the given factor
+    usage: /setcenterandzoom <factor>
+    permission: procedura.use
+  shift:
+    description: Shifts the pos to move the procedural build in the direction you're looking by a number of blocks
+    usage: /shift <distance>
+    permission: procedura.use
+  run:
+    description: Runs the chosen program with the current pos and zoom
+    usage: /run
+    permission: procedura.use
