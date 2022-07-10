@@ -44,6 +44,7 @@ public final class ProceduraPlugin extends JavaPlugin {
         getCommand("setcenterandzoom").setExecutor(new SetCenterAndZoomCommand(this));
         getCommand("shift").setExecutor(new ShiftCommand(this));
         getCommand("run").setExecutor(new RunCommand(this));
+        getCommand("getposandzoom").setExecutor(new GetPosAndZoomCommand(this));
 
         getLogger().info("ProceduraPlugin was enabled");
     }

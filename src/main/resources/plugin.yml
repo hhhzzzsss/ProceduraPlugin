@@ -76,3 +76,7 @@ commands:
     description: Runs the chosen program with the current pos and zoom
     usage: /run
     permission: procedura.use
+  getposandzoom:
+    description: Displays the current pos and zoom
+    usage: /getposandzoom
+    permission: procedura.use
