@@ -33,6 +33,7 @@ public final class ProceduraPlugin extends JavaPlugin {
         getCommand("setname").setExecutor(new SetNameCommand(this));
         getCommand("clearregion").setExecutor(new ClearRegionCommand(this));
         getCommand("save").setExecutor(new SaveCommand(this));
+        getCommand("multisave").setExecutor(new MultiSaveCommand(this));
         getCommand("goto").setExecutor(new GotoCommand(this));
         getCommand("goto").setTabCompleter(new GotoCommand(this));
         getCommand("setgeneratorpath").setExecutor(new SetGeneratorPathCommand(this));

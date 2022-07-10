@@ -87,68 +87,84 @@ public class RegionManager {
         }
     }
 
-    public void saveRegion(Region region, String filename) {
+    public void saveRegion(Region region, String filename, int pieces) {
         if (region == null) {
             throw new CommandException("Region is null");
         }
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, new SaveThread(region, filename));
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, new SaveThread(region, filename, pieces));
     }
 
     public class SaveThread implements Runnable {
         Region region;
         String filename;
+        int pieces;
         World world;
 
-        public SaveThread(Region region, String filename) {
+        public SaveThread(Region region, String filename, int pieces) {
             this.region = region;
             this.filename = filename;
+            this.pieces = pieces;
             this.world = new BukkitWorld(Bukkit.getWorlds().get(0));
         }
 
         @Override
         public void run() {
-            Clipboard clipboard;
-            try (EditSession editSession =
-                         WorldEdit.getInstance()
-                                 .newEditSessionBuilder()
-                                 .world(world)
-                                 .fastMode(true)
-                                 .build()) {
-                CuboidRegion cuboidRegion = new CuboidRegion(
-                        BlockVector3.at(region.xpos, region.ypos, region.zpos),
-                        BlockVector3.at(region.xpos+region.xdim-1, region.ypos +region.ydim -1, region.zpos+region.zdim-1)
-                );
-                clipboard = new BlockArrayClipboard(cuboidRegion, UUID.fromString("3f797064-b9bb-588f-9337-e2deb81e8973"));
-                clipboard.setOrigin(BlockVector3.at(region.xpos-1, 50, region.zpos-1));
+            for (int i = 0; i < pieces; i++) {
+                int z1 = region.zdim * i / pieces;
+                int z2 = region.zdim * (i+1) / pieces;
+                if (z1 == z2) {
+                    continue;
+                }
+                Clipboard clipboard;
+                try (EditSession editSession =
+                             WorldEdit.getInstance()
+                                     .newEditSessionBuilder()
+                                     .world(world)
+                                     .fastMode(true)
+                                     .build()) {
+                    CuboidRegion cuboidRegion = new CuboidRegion(
+                            BlockVector3.at(region.xpos, region.ypos, region.zpos + z1),
+                            BlockVector3.at(region.xpos + region.xdim - 1, region.ypos + region.ydim - 1, region.zpos + z2 - 1)
+                    );
+                    clipboard = new BlockArrayClipboard(cuboidRegion, UUID.fromString("3f797064-b9bb-588f-9337-e2deb81e8973"));
+                    clipboard.setOrigin(BlockVector3.at(region.xpos - 1, 50, region.zpos - 1));
 
-                ForwardExtentCopy forwardExtentCopy = new ForwardExtentCopy(
-                        editSession, cuboidRegion, clipboard, cuboidRegion.getMinimumPoint()
-                );
-                forwardExtentCopy.setCopyingBiomes(false);
-                forwardExtentCopy.setCopyingEntities(false);
+                    ForwardExtentCopy forwardExtentCopy = new ForwardExtentCopy(
+                            editSession, cuboidRegion, clipboard, cuboidRegion.getMinimumPoint()
+                    );
+                    forwardExtentCopy.setCopyingBiomes(false);
+                    forwardExtentCopy.setCopyingEntities(false);
+                    try {
+                        Operations.complete(forwardExtentCopy);
+                    } catch (Throwable e) {
+                        throw e;
+                    } finally {
+                        clipboard.flush();
+                    }
+                }
+
+                String partFileName = filename;
+                if (pieces > 1) {
+                    partFileName = partFileName + "_part" + (i+1);
+                }
+                if (!partFileName.endsWith(".schem")) {
+                    partFileName += ".schem";
+                }
+                Path path = schemDir.resolve(partFileName);
+
                 try {
-                    Operations.complete(forwardExtentCopy);
-                } catch (Throwable e) {
-                    throw e;
-                } finally {
-                    clipboard.flush();
+                    try (ClipboardWriter writer = BuiltInClipboardFormat.FAST.getWriter(Files.newOutputStream(path))) {
+                        writer.write(clipboard);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Bukkit.getScheduler().runTask(plugin, () -> {
+                        Bukkit.broadcast(Component.text("Failed to save plot to schematic: " + e.getMessage(), NamedTextColor.RED));
+                    });
+                    return;
                 }
+                clipboard.close();
             }
-
-            Path path = schemDir.resolve(filename);
-            try {
-                try (ClipboardWriter writer = BuiltInClipboardFormat.FAST.getWriter(Files.newOutputStream(path))) {
-                    writer.write(clipboard);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-                Bukkit.getScheduler().runTask(plugin, () -> {
-                    Bukkit.broadcast(Component.text("Failed to save plot to schematic: " + e.getMessage(), NamedTextColor.RED));
-                });
-                return;
-            }
-            clipboard.close();
-            plugin.bossbarHandler.updateAllBossbars();
             Bukkit.getScheduler().runTask(plugin, () -> {
                 Bukkit.broadcast(Component.text("Successfully saved to schematic", NamedTextColor.GRAY));
             });

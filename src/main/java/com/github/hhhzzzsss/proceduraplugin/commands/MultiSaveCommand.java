@@ -9,9 +9,11 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-public class SaveCommand implements CommandExecutor {
+import java.util.Arrays;
+
+public class MultiSaveCommand implements CommandExecutor {
     public ProceduraPlugin plugin;
-    public SaveCommand(ProceduraPlugin plugin) {
+    public MultiSaveCommand(ProceduraPlugin plugin) {
         this.plugin = plugin;
     }
 
@@ -23,18 +25,19 @@ public class SaveCommand implements CommandExecutor {
             return true;
         }
 
+        int pieces = Integer.parseInt(args[0]);
         String filename;
-        if (args.length == 0) {
+        if (args.length == 1) {
             filename = region.name.replace(" ", "_");
         } else {
-            filename = String.join(" ", args);
+            filename = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
         }
 
         Component component = Component.text("Saving ", NamedTextColor.GRAY)
                 .append(Component.text(region.name, NamedTextColor.DARK_AQUA))
                 .append(Component.text(" to schematic...", NamedTextColor.GRAY));
         sender.sendMessage(component);
-        plugin.regionManager.saveRegion(region, filename, 1);
+        plugin.regionManager.saveRegion(region, filename, pieces);
         return true;
     }
 }

@@ -34,7 +34,11 @@ commands:
     permission: procedura.use
   save:
     description: Saves the currently selected plot as a schematic
-    usage: /save [<filename>]
+    usage: /save <filename>
+    permission: procedura.use
+  multisave:
+    description: Saves the currently selected plot as a mutliple schematics
+    usage: /save <filename> <pieces>
     permission: procedura.use
   goto:
     description: Teleports to a region
