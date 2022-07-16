@@ -30,7 +30,8 @@ public class SetCenterCommand implements CommandExecutor {
             sender.sendMessage("Must be standing in a selected region");
             return true;
         }
-        
+
+        int bigDecimalScale = (int) Math.ceil(-Math.log10(plugin.zoomManager.zoom)) + 10;
         double centerX = region.xpos + region.xdim / 2.0;
         double centerY = region.ypos + region.ydim / 2.0;
         double centerZ = region.zpos + region.zdim / 2.0;
@@ -38,9 +39,11 @@ public class SetCenterCommand implements CommandExecutor {
         double offsetY = player.getLocation().getY() - centerY;
         double offsetZ = player.getLocation().getZ() - centerZ;
         double scale = 2.0 * plugin.zoomManager.zoom / region.getMinDim();
-        plugin.zoomManager.x = plugin.zoomManager.x.add(BigDecimal.valueOf(offsetX * scale));
-        plugin.zoomManager.y = plugin.zoomManager.y.add(BigDecimal.valueOf(offsetY * scale));
-        plugin.zoomManager.z = plugin.zoomManager.z.add(BigDecimal.valueOf(offsetZ * scale));
+        plugin.zoomManager.x = plugin.zoomManager.x.add(BigDecimal.valueOf(offsetX * scale).setScale(bigDecimalScale));
+        plugin.zoomManager.y = plugin.zoomManager.y.add(BigDecimal.valueOf(offsetY * scale).setScale(bigDecimalScale));
+        plugin.zoomManager.z = plugin.zoomManager.z.add(BigDecimal.valueOf(offsetZ * scale).setScale(bigDecimalScale));
+
+        plugin.zoomManager.recalculateScale();
 
         Component component = Component.text("Set pos to ", NamedTextColor.GRAY)
                 .append(Component.text(plugin.zoomManager.x + " " + plugin.zoomManager.y + " " + plugin.zoomManager.z, NamedTextColor.DARK_AQUA));

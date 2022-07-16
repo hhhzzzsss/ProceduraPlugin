@@ -36,11 +36,14 @@ public class ShiftCommand implements CommandExecutor {
             return true;
         }
 
+        int bigDecimalScale = (int) Math.ceil(-Math.log10(plugin.zoomManager.zoom)) + 10;
         Vector offset = player.getLocation().getDirection().multiply(-distance);
         double scale = 2.0 * plugin.zoomManager.zoom / region.getMinDim();
-        plugin.zoomManager.x = plugin.zoomManager.x.add(BigDecimal.valueOf(offset.getX() * scale));
-        plugin.zoomManager.y = plugin.zoomManager.y.add(BigDecimal.valueOf(offset.getY() * scale));
-        plugin.zoomManager.z = plugin.zoomManager.z.add(BigDecimal.valueOf(offset.getZ() * scale));
+        plugin.zoomManager.x = plugin.zoomManager.x.add(BigDecimal.valueOf(offset.getX() * scale).setScale(bigDecimalScale));
+        plugin.zoomManager.y = plugin.zoomManager.y.add(BigDecimal.valueOf(offset.getX() * scale).setScale(bigDecimalScale));
+        plugin.zoomManager.z = plugin.zoomManager.z.add(BigDecimal.valueOf(offset.getZ() * scale).setScale(bigDecimalScale));
+
+        plugin.zoomManager.recalculateScale();
 
         Component component = Component.text("Set pos to ", NamedTextColor.GRAY)
                 .append(Component.text(plugin.zoomManager.x + " " + plugin.zoomManager.y + " " + plugin.zoomManager.z, NamedTextColor.DARK_AQUA));
