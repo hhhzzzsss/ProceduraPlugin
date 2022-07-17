@@ -13,6 +13,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -39,6 +40,15 @@ public class BossbarHandler implements Listener {
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
+        Region regionFrom = plugin.regionManager.getContainingRegion(event.getFrom());
+        Region regionTo = plugin.regionManager.getContainingRegion(event.getTo());
+        if (regionFrom != regionTo) {
+            updateBossbar(event.getPlayer(), regionTo);
+        }
+    }
+
+    @EventHandler
+    public void onPlayerTeleport(PlayerTeleportEvent event) {
         Region regionFrom = plugin.regionManager.getContainingRegion(event.getFrom());
         Region regionTo = plugin.regionManager.getContainingRegion(event.getTo());
         if (regionFrom != regionTo) {
