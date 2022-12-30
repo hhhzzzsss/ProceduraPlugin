@@ -108,7 +108,7 @@ public class DumpLoader implements Runnable {
                 for (int z = 0; z < region.zdim; z++) {
                     for (int x = 0; x < region.xdim; x++) {
                         BlockState blockState = palette.get(din.readInt());
-                        editSession.setBlock(x + region.xpos, y + region.ypos, z + region.zpos, blockState);
+                        editSession.setBlock(x + region.xpos, y + region.ypos, z + region.zpos, blockState.toBaseBlock());
                     }
                 }
             }
